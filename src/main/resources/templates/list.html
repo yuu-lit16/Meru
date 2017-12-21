@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!-- タイムリーフ読み込み -->
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- タイムリーフ読み込み終了 -->
+<head>
+  <meta charset="UTF-8"></meta>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  <!-- csrf token 埋め込み -->
+<meta name="_csrf" content="${f:h(_csrf.token)}"/>  <!-- (1) -->
+<meta name="_csrf_header" content="${f:h(_csrf.headerName)}"/>  <!-- (2) -->
+  <!--  -->
+  
+  <!-- css -->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" 
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"></link>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"></link>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"></link>
+  <link rel="stylesheet" th:href="@{/css/mercari.css}"></link>
+   
+ <title>Rakus Items</title>
+</head>
+<body>
+  <!-- header -->
+  <nav class="navbar navbar-inverse">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Rakus Items</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a id="logout" href="/logout">Logout <i class="fa fa-power-off"></i></a></li>
+        </ul>
+        <p class="navbar-text navbar-right">
+          <span id="loginName">user: userName</span>
+        </p>
+      </div>
+    </div>
+  </nav>
+
+  <div id="main" class="container-fluid">
+  
+  
+    <!-- addItem link -->
+    <div id="addItemButton">
+      <!-- <a class="btn btn-default" href="./add.html"><i class="fa fa-plus-square-o"></i> Add New Item</a> -->
+      <a class="btn btn-default" href="/addItem"><i class="fa fa-plus-square-o"></i> Add New Item</a>
+    </div>
+
+
+
+    <!-- 検索フォーム -->
+    <div id="forms">
+      <form action="" class="form-inline" role="form">
+        <div class="form-group">
+          <input type="input" class="form-control" id="name" placeholder="item name"></input>
+        </div>
+        <div class="form-group"><i class="fa fa-plus"></i></div>
+        <div class="form-group">
+          <!-- 親カテゴリー出現用 -->
+          <select class="form-control" id="parent_category"></select>
+          <!-- 子カテゴリー出現用 -->
+          <select class="form-control" id="child_category"><option>parentCategoryを選択してください</option></select>
+          <!-- 孫カテゴリ－出現用 -->
+          <select class="form-control" id="grandchild_category"><option>childCategoryを選択してください</option></select>
+        </div>
+        <div class="form-group"><i class="fa fa-plus"></i></div>
+        <div class="form-group">
+        <!-- brand出現用 -->
+          <select class="form-control" id="select_category"><option>Categoryを選択してください</option></select>
+        </div>
+        <div class="form-group"></div>
+        <!-- submitボタン -->
+        <!-- <button type="submit" class="btn btn-default" id="serch_button"><i class="fa fa-angle-double-right"></i> search</button> -->
+        <button type="button" class="btn btn-default" id="serch_button"><i class="fa fa-angle-double-right"></i> search</button>
+      </form>
+    </div>
+
+    <!-- pagination -->
+    <div class="pages">
+      <nav class="page-nav">
+        <ul class="pager">
+          <li class="previous"><a class="prevA" href="#">&larr; prev</a></li>
+          <li class="next"><a class="nextA" href="#">next &rarr;</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- table -->
+    <div class="table-responsive">
+         <table id="item-table" class="table table-hover table-condensed">
+        <thead>
+      
+          <tr>
+            <th>name</th>
+            <th>price</th>
+            <th>category</th>
+            <th>brand</th>
+            <th>cond</th>
+          </tr>
+        </thead>
+        <tbody class="appendClass">
+        </tbody>
+      </table>
+    
+    </div>
+
+    <!-- pagination -->
+    <div class="pages">
+      <nav class="page-nav">
+        <ul class="pager">
+          <li class="previous"><a class="prevA" href="#">&larr; prev</a></li>
+          <li class="next"><a class="nextA" href="#">next &rarr;</a></li>
+        </ul>
+      </nav>
+
+      <!-- ページ番号を指定して表示するフォーム -->
+      <div id="select-page">
+        <form class="form-inline">
+          <div class="form-group">
+            <div class="input-group col-xs-6">
+              <label></label>
+              <input type="text" id="select_page_form" class="form-control" name="pageNumber"></input>
+              <!-- 総ページ数 -->
+              <div class="input-group-addon"></div>
+            </div>
+            <div class="input-group col-xs-1">
+              <button type="submit" id="go_btn" class="btn btn-default">Go</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+<!-- script -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+  integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>  
+<!-- jquery読み込み -->
+<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!-- jquery読み込み終了 -->
+<!-- js -->
+<script th:src="@{/js/list.js}"></script>
+<!-- /js -->
+  
+  
+<!-- script -->
+</body>
+</html>
