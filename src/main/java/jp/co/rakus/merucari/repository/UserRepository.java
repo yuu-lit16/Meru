@@ -6,11 +6,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import jp.co.rakus.merucari.domain.Item;
 import jp.co.rakus.merucari.domain.User;
 
 @Repository
@@ -64,21 +61,13 @@ public class UserRepository {
 	 */
 	public void save(User user) {
 
-		user.setId(getMaxId() + 1);
-		user.setAuthority(0);
-
-		
-		// password エンコード処理
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		String encodedPassword =  encoder.encode(user.getPassword());
-		
 		String sql = "insert into users (id,name,password,authority,mail_address)"
 				+ " values(:id,:name,:password,:authority,:mail_address)";
 
 		SqlParameterSource param = new MapSqlParameterSource()
 				.addValue("id", user.getId())
 				.addValue("name", user.getName())
-				.addValue("password", encodedPassword)
+				.addValue("password", user.getPassword())
 				.addValue("authority", user.getAuthority())
 				.addValue("mail_address",user.getMailAddress());				
 
@@ -99,9 +88,4 @@ public class UserRepository {
 		return maxId;
 	}
 	
-	
-
-	
-	
-
 }

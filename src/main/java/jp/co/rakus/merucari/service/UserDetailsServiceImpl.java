@@ -35,9 +35,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     	MLoginUser user = new MLoginUser();
         try {
             // 入力したユーザーIDから認証を行うユーザー情報を取得する
-            // 処理内容は省略
         	
-        	// ここでuserをmailaddress でとってきて、user　に詰めて返してあげればよい
+        	// ここでuserをmailaddressで検索　その後userにつめてspringsecurityへ
         	User selectedUser = repository.findByMaillAddress(mail_address);
         	user.setLoginUserId(selectedUser.getMailAddress());
         	user.setPassword(selectedUser.getPassword());

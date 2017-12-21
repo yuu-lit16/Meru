@@ -9,22 +9,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import jp.co.rakus.merucari.domain.Item;
-import jp.co.rakus.merucari.repository.CategoryRepository;
-import jp.co.rakus.merucari.repository.ItemRepository;
 import jp.co.rakus.merucari.service.ItemService;
 
 @Controller
 @EnableAutoConfiguration
 public class UpdateItemController {
-
-	@Autowired
-	private ItemRepository itemRepository;
-
-	@Autowired
-	private CategoryRepository categoryRepository;
 
 	@Autowired
 	private ItemService itemService;
@@ -58,7 +48,7 @@ public class UpdateItemController {
 		item.setCondition(Integer.parseInt(form.getCondition()));
 		item.setDescription(form.getDescription());
 
-		itemRepository.save(item);
+		itemService.save(item);
 
 		return "list";
 	}
@@ -67,7 +57,7 @@ public class UpdateItemController {
 	@RequestMapping("/editItem")
 	public String displayUpdateItem(@RequestParam String id, Model model) {
 
-		Item item = itemRepository.findById(Integer.parseInt(id));
+		Item item = itemService.findById(Integer.parseInt(id));
 		UpdateItemForm form = new UpdateItemForm();
 
 		form.setUpdateItemId(id);
@@ -100,7 +90,7 @@ public class UpdateItemController {
 		item.setCondition(Integer.parseInt(form.getCondition()));
 		item.setDescription(form.getDescription());
 
-		itemRepository.update(item);
+		itemService.update(item);
 
 		return "list";
 	}

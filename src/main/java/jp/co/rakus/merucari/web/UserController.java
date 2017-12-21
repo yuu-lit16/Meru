@@ -4,16 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import jp.co.rakus.merucari.domain.User;
-import jp.co.rakus.merucari.repository.UserRepository;
+import jp.co.rakus.merucari.service.UserService;
 
 @Controller
 @EnableAutoConfiguration
 public class UserController {
-	
+
 	@Autowired
-	private UserRepository repository;
+	private UserService service;
 
 	/** ログインページを表示する */
 	@RequestMapping("/displayLoginPage")
@@ -32,10 +31,9 @@ public class UserController {
 	public String excuteRegister(String mail_address, String password) {
 
 		User user = new User();
-		user.setName("test");
 		user.setMailAddress(mail_address);
 		user.setPassword(password);
-		repository.save(user);
+		service.save(user);
 		
 		return "login";
 	}
@@ -46,5 +44,4 @@ public class UserController {
 		return "/logout";
 	}
 
-	
 }

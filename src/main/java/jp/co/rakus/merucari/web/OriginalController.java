@@ -31,11 +31,7 @@ public class OriginalController {
 		List<String> categoryNameList = service.findAllDistinct();
 
 		/** 1. 一番目を取得する */
-		// String[] categoryName = null;
-
 		List<String> firstList = new ArrayList<>();
-
-		// List<String> secondNameList = new ArrayList<>();
 
 		for (int i = 0; i < categoryNameList.size(); i++) {
 			try {
@@ -61,11 +57,6 @@ public class OriginalController {
 		// -------------------------------------------------------
 
 		/** 2. 2番目を取得する */
-
-		// 本来の処理
-		// List<Category> category1stList = repository.findAllCategoryTable();
-
-		// 仮置きの処理
 		List<Category> category1stList = repository.findFirstCategoryTable();
 
 		for (int i = 0; i < category1stList.size(); i++) {
@@ -117,7 +108,6 @@ public class OriginalController {
 					secondCategoryObjectList.add(secondCategory);
 				}
 			}
-			// List<String> thirdCategoryNameList = new ArrayList<>();
 			for (Category secondCategoryObject : secondCategoryObjectList) {
 				List<String> thirdCategoryNameList = new ArrayList<>();
 				for (String categoryName : categoryNameList) {
@@ -150,66 +140,6 @@ public class OriginalController {
 			}
 
 		}
-		// for (int i = 0; i < firstCategoryList.size(); i++) {
-		//
-		// // コピペ開始
-		//
-		// System.out.println(i + "番目のループを実行中 (thrid登録処理)");
-		//
-		// List<Category> secondCategoryObjectList = new ArrayList<Category>();
-		//
-		// // for 追加
-		// for (int a = 0; a < secondCategoryList.size(); a++) {
-		//
-		// if (firstCategoryList.get(i).getId() ==
-		// secondCategoryList.get(a).getParent()) {
-		// secondCategoryObjectList.add(secondCategoryList.get(a));
-		// System.out.println("secondCategoryObjectList"+
-		// secondCategoryList.get(a).getName());
-		// }
-		// }
-		//
-		// for (int j = 0; j < secondCategoryObjectList.size(); j++) {
-		//
-		// List<String> thirdCategoryNameList = new ArrayList<>();
-		//
-		// // child List
-		// for (int b = 0; b < categoryNameList.size(); b++) {
-		//
-		// try {
-		// String[] categoryAllName = categoryNameList.get(j).split("/");
-		//
-		// if (categoryAllName[0].equals(firstCategoryList.get(i).getName())) {
-		// //&& categoryAllName[1].equals(secondCategoryObjectList.get(j).getName())) {
-		// if (categoryAllName[1].equals(secondCategoryObjectList.get(j).getName())) {
-		// thirdCategoryNameList.add(categoryAllName[2]);
-		// }
-		// }
-		//
-		// } catch (Exception e) {
-		// }
-		//
-		// }
-		// System.out.println();
-		//
-		// // 重複を弾く
-		// List<String> thirdNameListDistinct = new ArrayList<String>(new
-		// HashSet<>(thirdCategoryNameList));
-		//
-		// for (int k = 0; k < thirdNameListDistinct.size(); k++) {
-		//
-		// Category category = new Category();
-		// category.setName(thirdNameListDistinct.get(k));
-		// category.setParent(secondCategoryObjectList.get(j).getId());
-		//
-		// /** category3 を save --------------------------------- */
-		// repository.saveCategorySecond(category);
-		// System.out.println("saveするcategory = " + category);
-		// /** ----------------------------------------------------- */
-		//
-		// }
-		// }
 		return "index";
 	}
-
 }

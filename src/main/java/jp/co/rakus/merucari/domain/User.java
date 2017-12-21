@@ -8,12 +8,25 @@ public class User {
 	private int authority;
 	private String mailAddress;
 	
+	public User(int id, String name, String password, int authority, String mailAddress) {
+		this.id = id;
+		this.name = name;
+		this.password = password;
+		this.authority = authority;
+		this.mailAddress = mailAddress;
+	}
+	
+	public User() {
+	}
+	
+	
 	public String getMailAddress() {
 		return mailAddress;
 	}
 	public void setMailAddress(String mailAddress) {
 		this.mailAddress = mailAddress;
 	}
+
 	public int getId() {
 		return id;
 	}

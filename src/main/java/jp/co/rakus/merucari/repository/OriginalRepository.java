@@ -1,14 +1,10 @@
 package jp.co.rakus.merucari.repository;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
@@ -102,17 +98,3 @@ public class OriginalRepository {
 	}
 
 }
-
-
-	
-
-
-
-/*
- * public void saveCategory(Category category) {
- * 
- * SqlParameterSource param = new BeanPropertySqlParameterSource(category);
- * 
- * jdbcTemplate.update(
- * "INSERT INTO users (id,parent,name) values (:id,:parent,:name)",param); }
- */

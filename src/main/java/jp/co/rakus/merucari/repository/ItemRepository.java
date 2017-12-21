@@ -5,14 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import jp.co.rakus.merucari.domain.Category;
 import jp.co.rakus.merucari.domain.Item;
 
 @Repository
@@ -53,16 +50,12 @@ public class ItemRepository {
 	}
 
 	/**
-	 * 引数のitemを追加(idとshippingはrepository内で追加 id = maxId +1 , sihpping = 0)
+	 * 引数のitemを追加
 	 * 
 	 * @param Item
 	 */
 	public void save(Item item) {
 
-		item.setId(getMaxId() + 1);
-		item.setShipping(0);
-
-		// SqlParameterSource param = new BeanPropertySqlParameterSource(item);
 		String sql = "insert into items(id,name,condition,category,brand,price,shipping,description)"
 				+ " values(:id,:name,:condition,:categoryId,:brand,:price,:shipping,:description)";
 
@@ -191,7 +184,6 @@ public class ItemRepository {
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
 
 		List<Item> itemList = namedjdbcTemplate.query(sql, param, RowMapper);
-		;
 
 		return itemList;
 	}

@@ -2,8 +2,12 @@ package jp.co.rakus.merucari.web;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jp.co.rakus.merucari.domain.Category;
 import jp.co.rakus.merucari.domain.Item;
-import jp.co.rakus.merucari.repository.CategoryRepository;
-import jp.co.rakus.merucari.repository.ItemRepository;
+import jp.co.rakus.merucari.service.CategoryService;
 import jp.co.rakus.merucari.service.ItemService;
 
 @Controller
@@ -21,40 +24,40 @@ import jp.co.rakus.merucari.service.ItemService;
 public class ItemController {
 
 	@Autowired
-	private ItemRepository itemRepository;
-	
-	@Autowired
-	private CategoryRepository categoryRepository;
+	private CategoryService categoryService;
 	
 	@Autowired
 	private ItemService itemService;
+	
+	@Autowired
+	HttpSession session;
 
 	/** 【ajax】最初にアクセスされた時にItemをJSONで返す */
 	@RequestMapping(value = "/getJsonOfIndexItemList")
 	@ResponseBody
 	public List<Item> sendJsonIndex() {
-		return itemRepository.findTo30();
+		return itemService.findTo30();
 	}
 	
 	/** 【ajax】最初にアクセスされた時に * 親Category * をJSONで返す */
 	@RequestMapping(value = "/getJsonOfParentCategory")
 	@ResponseBody
 	public List<Category> sendCategoryIndex() {
-		return categoryRepository.findParent();
+		return categoryService.findParent();
 	}
 	
 	/** 【ajax】検索機能 - 親カテゴリーのidを元に子カテゴリーを返す - */
 	@RequestMapping(value = "/getJsonOfChildCategory")
 	@ResponseBody
 	public List<Category> getJsonOfChildCategory(@RequestParam String parentId) {
-		return categoryRepository.findChildByParent(Integer.parseInt(parentId));
+		return categoryService.findChildByParent(Integer.parseInt(parentId));
 	}
 	
 	/** 【ajax】検索機能 - 子カテゴリーのidを元に孫カテゴリーを返す - */
 	@RequestMapping(value = "/getJsonOfGrandChildCategory")
 	@ResponseBody
 	public List<Category> getJsonOfGrandChildCategory(@RequestParam String parentId) {
-		return categoryRepository.findChildByParent(Integer.parseInt(parentId));
+		return categoryService.findChildByParent(Integer.parseInt(parentId));
 	}
 	
 	/** 【ajax】検索機能 - 孫カテゴリーのidを元にブランドを返す - */
@@ -71,8 +74,8 @@ public class ItemController {
 			@RequestParam String selectGrandChildValue,
 			@RequestParam String selectBrandValue
 			) {
-		
-		List<Item> itemList = itemRepository.findSearchedItem(
+
+		List<Item> itemList = itemService.findSearchedItem(
 				Integer.parseInt(selectGrandChildValue), 
 				selectBrandValue
 				);
@@ -89,7 +92,7 @@ public class ItemController {
 			@RequestParam String selectBrandValue
 			) {
 		
-		List<Item> itemList = itemRepository.findSearchedItemExistName(
+				List<Item> itemList = itemService.findSearchedItemExistName(
 				Integer.parseInt(selectGrandChildValue), 
 				selectBrandValue,
 				selectNameValue
@@ -105,7 +108,7 @@ public class ItemController {
 			@RequestParam String selectNameValue
 			) {
 		
-		List<Item> itemList = itemRepository.findSearchedItemOnlyName(selectNameValue);
+		List<Item> itemList = itemService.findSearchedItemOnlyName(selectNameValue);
 		
 		return itemList;
 	}
@@ -116,7 +119,7 @@ public class ItemController {
 	@RequestMapping(value = "/getTotalItem")
 	@ResponseBody
 	public Integer getTotalItem() {
-		return itemRepository.getNumOfTotalData();
+		return itemService.getNumOfTotalData();
 	}
 
 	/** 【ajax】ページネーション機能 - ブラウザからクリックされたページを受け取り、そこで表示するItemListを返す */
@@ -133,7 +136,7 @@ public class ItemController {
 			offset = 0;
 		}
 
-		List<Item> itemList = itemRepository.findByLimitAndOffset(limit, offset);
+		List<Item> itemList = itemService.findByLimitAndOffset(limit, offset);
 
 		return itemList;
 	}
@@ -152,7 +155,7 @@ public class ItemController {
 			offset = 0;
 		}
 
-		List<Item> itemList = itemRepository.findByLimitAndOffset(limit, offset);
+		List<Item> itemList = itemService.findByLimitAndOffset(limit, offset);
 
 		return itemList;
 	}
@@ -161,6 +164,20 @@ public class ItemController {
 	/** 一覧リストを表示する */
 	@RequestMapping("/")
 	public String index() {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		// user 情報を取得
+		String username = "";
+		if (principal instanceof UserDetails) {
+		  username = ((UserDetails)principal).getUsername();
+		} else {
+		  username = principal.toString();
+		}
+		
+		session.setAttribute("userName", username);
+		
+		
 		return "list";
 	}
 	
@@ -169,7 +186,7 @@ public class ItemController {
 	@RequestMapping("/detail")
 	public String displayDetail(@RequestParam String id , Model model) {
 		
-		Item item = itemRepository.findById(Integer.parseInt(id));
+		Item item = itemService.findById(Integer.parseInt(id));
 		model.addAttribute("itemList",item);
 		
 		return "detail";
