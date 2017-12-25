@@ -19,7 +19,7 @@ public class ItemService {
 	 * 
 	 * */
 	public List<Item> findBrandByParentDistinct(int id) {
-		
+
 		List<Item> itemList = repository.findBrandByParent(id);
 		
 		// 重複を弾く
@@ -33,6 +33,15 @@ public class ItemService {
 			}
 		}
 		return itemListDistinctAndNotNull;
+	}
+	
+	
+	/**
+	 * brandをString型のListで返す
+	 * 
+	 * */
+	public List<String> findBrandOfStringByParent(int id) {
+		return repository.findBrandOfStringByParent(id);
 	}
 	
 	
@@ -70,9 +79,6 @@ public class ItemService {
 	public void update(Item item) {
 		repository.update(item);
 	}
-	
-	
-	
 
 	/**
 	 * test用 itemテーブルの頭から30件取得
@@ -174,5 +180,4 @@ public class ItemService {
 		return repository.findSearchedItemOnlyName(name);
 	}
 
-	
 }

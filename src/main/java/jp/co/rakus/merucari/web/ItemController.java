@@ -29,8 +29,7 @@ public class ItemController {
 	@Autowired
 	private ItemService itemService;
 	
-	@Autowired
-	HttpSession session;
+	private final int LIMIT = 30;
 
 	/** 【ajax】最初にアクセスされた時にItemをJSONで返す */
 	@RequestMapping(value = "/getJsonOfIndexItemList")
@@ -63,9 +62,10 @@ public class ItemController {
 	/** 【ajax】検索機能 - 孫カテゴリーのidを元にブランドを返す - */
 	@RequestMapping(value = "/getJsonOfBrand")
 	@ResponseBody
-	public List<Item> getJsonOfBrand(@RequestParam String parentId) {
-		return itemService.findBrandByParentDistinct(Integer.parseInt(parentId));
+	public List<String> getJsonOfBrand(@RequestParam String parentId) {
+		return itemService.findBrandOfStringByParent(Integer.parseInt(parentId));
 	}
+
 	
 	/** 【ajax】検索機能 - 孫idとブランド名で検索した結果のItemListを返す */
 	@RequestMapping(value = "/getItemOfSerched")
@@ -112,8 +112,6 @@ public class ItemController {
 		
 		return itemList;
 	}
-
-
 	
 	/** 【ajax】ページネーション機能 - DBのItem総数を返す */
 	@RequestMapping(value = "/getTotalItem")
@@ -127,16 +125,15 @@ public class ItemController {
 	@ResponseBody
 	public List<Item> clickPagingNum(@RequestParam String counter) {
 
-		int limit = 30;
 		int offset = 0;
 
 		try {
-			offset = limit * (Integer.parseInt(counter) - 1);
+			offset = LIMIT * (Integer.parseInt(counter) - 1);
 		} catch (Exception e) {
 			offset = 0;
 		}
 
-		List<Item> itemList = itemService.findByLimitAndOffset(limit, offset);
+		List<Item> itemList = itemService.findByLimitAndOffset(LIMIT, offset);
 
 		return itemList;
 	}
@@ -146,16 +143,15 @@ public class ItemController {
 	@ResponseBody
 	public List<Item> selectPaging(@RequestParam String selectPageNum) {
 
-		int limit = 30;
 		int offset = 0;
 
 		try {
-			offset = limit * (Integer.parseInt(selectPageNum) - 1);
+			offset = LIMIT * (Integer.parseInt(selectPageNum) - 1);
 		} catch (Exception e) {
 			offset = 0;
 		}
 
-		List<Item> itemList = itemService.findByLimitAndOffset(limit, offset);
+		List<Item> itemList = itemService.findByLimitAndOffset(LIMIT, offset);
 
 		return itemList;
 	}
@@ -163,21 +159,7 @@ public class ItemController {
 	
 	/** 一覧リストを表示する */
 	@RequestMapping("/")
-	public String index() {
-		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-		// user 情報を取得
-		String username = "";
-		if (principal instanceof UserDetails) {
-		  username = ((UserDetails)principal).getUsername();
-		} else {
-		  username = principal.toString();
-		}
-		
-		session.setAttribute("userName", username);
-		
-		
+	public String index(Model model) {
 		return "list";
 	}
 	
@@ -188,7 +170,6 @@ public class ItemController {
 		
 		Item item = itemService.findById(Integer.parseInt(id));
 		model.addAttribute("itemList",item);
-		
 		return "detail";
 	}
 

@@ -1,100 +1,42 @@
+var totalPageNum = 0;
+var flag = false;
+var counter = 1;
 
 
 /** ItemList表示機能 - 初めてアクセスされた際にitemを表示する - */
 $(function () {
 
 	$.ajax({
-		//type: "POST",
 		type: "get",
 		url: "/getJsonOfIndexItemList",
 		dataType: "json"
 	}).then(function (data) {
 
-		console.log(data);
-
 		for (var value of data) {
 
-			$(".appendClass").append(
+			if (value.brand == null) {
+				$(".appendClass").append(
 
-				"<tr>"
-				+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-				+ value.name
-				+ "</a></td>"
-				+ "<td class='item-price'>"
-				+ value.price
-				+ "</td>"
-				+ "<td class='item-category'>"
-				+ value.category
-				+ "</td>"
-				+ "<td class='item-brand'>"
-				+ value.brand
-				+ "</td>"
-				+ "<td class='item-condition'>"
-				+ value.condition
-				+ "</td>"
-				+ "</tr>"
-			)
-		}
-	}, function () {
-	});
-});
+					"<tr>"
+					+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+					+ value.name
+					+ "</a></td>"
+					+ "<td class='item-price'>"
+					+ value.price
+					+ "</td>"
+					+ "<td class='item-category'>"
+					+ value.category
+					+ "</td>"
+					+ "<td class='item-brand'>"
+					+ ""
+					+ "</td>"
+					+ "<td class='item-condition'>"
+					+ value.condition
+					+ "</td>"
+					+ "</tr>"
+				)
 
-
-
-/** ページネーション機能  - 初めてアクセスされた際に総ページ数を算出 - */
-$(function () {
-
-	var totalDataNum = 0;
-	var totalPageNum = 0;
-
-	//　商品の総数を取得
-	$.ajax({
-		//type: "POST",
-		type: "get",
-		url: "/getTotalItem",
-		dataType: "json"
-	}).then(function (data) {
-
-		totalDataNum = data;
-		totalPageNum = Math.ceil(totalDataNum / 30);
-		$(".input-group-addon").html(
-			"/" + totalPageNum
-		)
-
-	}, function () {
-	});
-
-
-	var selectVal = $("#select_test").val();
-
-
-});
-
-
-/** ページネーション機能  - next or prev が押された時に発生 - */
-$(function () {
-
-	var counter = 1;
-	$(select_page_form).val(counter);
-
-	// next が押されたら +1
-	$(".nextA").click(function () {
-
-		counter += 1;
-		console.log(counter);
-		$(select_page_form).val(counter);
-
-		$.ajax({
-			//type: "POST",
-			type: "get",
-			url: "/paging",
-			dataType: "json",
-			data: { "counter": counter },
-		}).then(function (data) {
-
-			$(".appendClass").empty();
-
-			for (var value of data) {
+			} else {
 
 				$(".appendClass").append(
 
@@ -117,26 +59,65 @@ $(function () {
 					+ "</tr>"
 				)
 			}
-		}, function () {
-		});
+		}
+	}, function () {
+	});
+});
 
 
+
+/** ページネーション機能  - 初めてアクセスされた際に総ページ数を算出 - */
+$(function () {
+
+	var totalDataNum = 0;
+
+	//　商品の総数を取得
+	$.ajax({
+		type: "get",
+		url: "/getTotalItem",
+		dataType: "json"
+	}).then(function (data) {
+
+		totalDataNum = data;
+		totalPageNum = Math.ceil(totalDataNum / 30);
+		$(".input-group-addon").html(
+			"/" + totalPageNum
+		)
+
+	}, function () {
 	});
 
+	var selectVal = $("#select_test").val();
+});
 
-	// prev が押されたら -1
-	$(".prevA").click(function () {
 
-		if (counter < 1 || counter == 1) {
-			counter = 1;
+/** ページネーション機能  - next or prev が押された時に発生 - */
+$(function () {
+
+	$(select_page_form).val(counter);
+
+	// next が押されたら +1
+	$(".nextA").click(function () {
+
+		// ページ総数処理 -------------------
+		if (flag) {
+			$(".input-group-addon").html(
+				"/" + totalPageNum
+			)
+			flag = false;
+		}
+		//----------------------------------
+
+		if (counter >= totalPageNum) {
+			counter = totalPageNum;
 			$(select_page_form).val(counter);
 		} else {
-			counter -= 1;
+
+			counter += 1;
 			console.log(counter);
 			$(select_page_form).val(counter);
 
 			$.ajax({
-				//type: "POST",
 				type: "get",
 				url: "/paging",
 				dataType: "json",
@@ -147,26 +128,136 @@ $(function () {
 
 				for (var value of data) {
 
-					$(".appendClass").append(
+					if (value.brand == null) {
+						$(".appendClass").append(
 
-						"<tr>"
-						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-						+ value.name
-						+ "</a></td>"
-						+ "<td class='item-price'>"
-						+ value.price
-						+ "</td>"
-						+ "<td class='item-category'>"
-						+ value.category
-						+ "</td>"
-						+ "<td class='item-brand'>"
-						+ value.brand
-						+ "</td>"
-						+ "<td class='item-condition'>"
-						+ value.condition
-						+ "</td>"
-						+ "</tr>"
-					)
+							"<tr>"
+							+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+							+ value.name
+							+ "</a></td>"
+							+ "<td class='item-price'>"
+							+ value.price
+							+ "</td>"
+							+ "<td class='item-category'>"
+							+ value.category
+							+ "</td>"
+							+ "<td class='item-brand'>"
+							+ ""
+							+ "</td>"
+							+ "<td class='item-condition'>"
+							+ value.condition
+							+ "</td>"
+							+ "</tr>"
+						)
+
+					} else {
+
+
+						$(".appendClass").append(
+
+							"<tr>"
+							+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+							+ value.name
+							+ "</a></td>"
+							+ "<td class='item-price'>"
+							+ value.price
+							+ "</td>"
+							+ "<td class='item-category'>"
+							+ value.category
+							+ "</td>"
+							+ "<td class='item-brand'>"
+							+ value.brand
+							+ "</td>"
+							+ "<td class='item-condition'>"
+							+ value.condition
+							+ "</td>"
+							+ "</tr>"
+						)
+					}
+				}
+			}, function () {
+			});
+		}
+	});
+
+
+	// prev が押されたら -1
+	$(".prevA").click(function () {
+
+		// ページ総数処理 -------------------
+		if (flag) {
+			$(".input-group-addon").html(
+				"/" + totalPageNum
+			)
+			flag = false;
+		}
+		//----------------------------------
+
+
+		if (counter < 1 || counter == 1) {
+			counter = 1;
+			$(select_page_form).val(counter);
+		} else {
+			counter -= 1;
+			console.log(counter);
+			$(select_page_form).val(counter);
+
+			$.ajax({
+				type: "get",
+				url: "/paging",
+				dataType: "json",
+				data: { "counter": counter },
+			}).then(function (data) {
+
+				$(".appendClass").empty();
+
+				for (var value of data) {
+
+					if (value.brand == null) {
+						$(".appendClass").append(
+
+							"<tr>"
+							+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+							+ value.name
+							+ "</a></td>"
+							+ "<td class='item-price'>"
+							+ value.price
+							+ "</td>"
+							+ "<td class='item-category'>"
+							+ value.category
+							+ "</td>"
+							+ "<td class='item-brand'>"
+							+ ""
+							+ "</td>"
+							+ "<td class='item-condition'>"
+							+ value.condition
+							+ "</td>"
+							+ "</tr>"
+						)
+
+					} else {
+
+						$(".appendClass").append(
+
+							"<tr>"
+							+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+							+ value.name
+							+ "</a></td>"
+							+ "<td class='item-price'>"
+							+ value.price
+							+ "</td>"
+							+ "<td class='item-category'>"
+							+ value.category
+							+ "</td>"
+							+ "<td class='item-brand'>"
+							+ value.brand
+							+ "</td>"
+							+ "<td class='item-condition'>"
+							+ value.condition
+							+ "</td>"
+							+ "</tr>"
+						)
+					}
 				}
 			}, function () {
 			});
@@ -181,40 +272,78 @@ $(function () {
 /** ページ選択遷移機能 */
 $("#go_btn").click(function () {
 
+
+	// ページ総数処理 -------------------
+	if (flag) {
+		$(".input-group-addon").html(
+			"/" + totalPageNum
+		)
+		flag = false;
+	}
+	//----------------------------------
+
 	alert($("#select_page_form").val() + "ページ目へ移動します");
 
 	$.ajax({
-		//type: "POST",
 		type: "get",
 		url: "/selectPaging",
 		dataType: "json",
 		data: { "selectPageNum": $("#select_page_form").val() },
 	}).then(function (data) {
 
+		counter = parseInt($("#select_page_form").val());
+		console.log(counter);
+
 		$(".appendClass").empty();
 
 		for (var value of data) {
 
-			$(".appendClass").append(
 
-				"<tr>"
-				+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-				+ value.name
-				+ "</a></td>"
-				+ "<td class='item-price'>"
-				+ value.price
-				+ "</td>"
-				+ "<td class='item-category'>"
-				+ value.category
-				+ "</td>"
-				+ "<td class='item-brand'>"
-				+ value.brand
-				+ "</td>"
-				+ "<td class='item-condition'>"
-				+ value.condition
-				+ "</td>"
-				+ "</tr>"
-			)
+			if (value.brand == null) {
+				$(".appendClass").append(
+
+					"<tr>"
+					+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+					+ value.name
+					+ "</a></td>"
+					+ "<td class='item-price'>"
+					+ value.price
+					+ "</td>"
+					+ "<td class='item-category'>"
+					+ value.category
+					+ "</td>"
+					+ "<td class='item-brand'>"
+					+ ""
+					+ "</td>"
+					+ "<td class='item-condition'>"
+					+ value.condition
+					+ "</td>"
+					+ "</tr>"
+				)
+
+			} else {
+
+				$(".appendClass").append(
+
+					"<tr>"
+					+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+					+ value.name
+					+ "</a></td>"
+					+ "<td class='item-price'>"
+					+ value.price
+					+ "</td>"
+					+ "<td class='item-category'>"
+					+ value.category
+					+ "</td>"
+					+ "<td class='item-brand'>"
+					+ value.brand
+					+ "</td>"
+					+ "<td class='item-condition'>"
+					+ value.condition
+					+ "</td>"
+					+ "</tr>"
+				)
+			}
 		}
 	}, function () {
 	});
@@ -227,13 +356,10 @@ $("#go_btn").click(function () {
 $(function () {
 
 	$.ajax({
-		//type: "POST",
 		type: "get",
 		url: "/getJsonOfParentCategory",
 		dataType: "json",
 	}).then(function (data) {
-
-		console.log(data);
 
 		$("#parent_category").html("<option value='0'>- parentCategory -</option>");
 
@@ -265,7 +391,6 @@ $(document).on('change', '#parent_category', function () {
 	} else {
 
 		$.ajax({
-			//type: "POST",
 			type: "get",
 			url: "/getJsonOfChildCategory",
 			dataType: "json",
@@ -302,7 +427,6 @@ $(document).on('change', '#child_category', function () {
 	} else {
 
 		$.ajax({
-			//type: "POST",
 			type: "get",
 			url: "/getJsonOfGrandChildCategory",
 			dataType: "json",
@@ -339,7 +463,6 @@ $(document).on('change', '#grandchild_category', function () {
 	} else {
 
 		$.ajax({
-			//type: "POST",
 			type: "get",
 			url: "/getJsonOfBrand",
 			dataType: "json",
@@ -352,7 +475,7 @@ $(document).on('change', '#grandchild_category', function () {
 
 				$("#select_category").append(
 
-					"<option value='" + value.brand + "'>" + value.brand + "</option>"
+					"<option value='" + value + "'>" + value + "</option>"
 				)
 			}
 		}, function () {
@@ -364,11 +487,17 @@ $(document).on('change', '#grandchild_category', function () {
 // 検索用フォームがクリックされたら発動
 $(document).on('click', '#serch_button', function () {
 
+	// ページ総数処理 -------------------
+	$(".input-group-addon").html(
+		"/" + 1
+	)
+	flag = true;
+	//----------------------------------
+
 	var selectNameValue = $("#name").val();
 	var selectGrandChildValue = $("#grandchild_category").val();
 	var selectBrandValue = $("#select_category").val();
 	var selectParentValue = $("#parent_category").val();
-
 
 	// name 検索
 	if (selectParentValue != 0 && selectBrandValue == "Categoryを選択してください") {
@@ -387,26 +516,51 @@ $(document).on('click', '#serch_button', function () {
 
 			for (var value of data) {
 
-				$(".appendClass").append(
+				if (value.brand == null) {
+					$(".appendClass").append(
 
-					"<tr>"
-					+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-					+ value.name
-					+ "</a></td>"
-					+ "<td class='item-price'>"
-					+ value.price
-					+ "</td>"
-					+ "<td class='item-category'>"
-					+ value.category
-					+ "</td>"
-					+ "<td class='item-brand'>"
-					+ value.brand
-					+ "</td>"
-					+ "<td class='item-condition'>"
-					+ value.condition
-					+ "</td>"
-					+ "</tr>"
-				)
+						"<tr>"
+						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+						+ value.name
+						+ "</a></td>"
+						+ "<td class='item-price'>"
+						+ value.price
+						+ "</td>"
+						+ "<td class='item-category'>"
+						+ value.category
+						+ "</td>"
+						+ "<td class='item-brand'>"
+						+ ""
+						+ "</td>"
+						+ "<td class='item-condition'>"
+						+ value.condition
+						+ "</td>"
+						+ "</tr>"
+					)
+
+				} else {
+
+					$(".appendClass").append(
+
+						"<tr>"
+						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+						+ value.name
+						+ "</a></td>"
+						+ "<td class='item-price'>"
+						+ value.price
+						+ "</td>"
+						+ "<td class='item-category'>"
+						+ value.category
+						+ "</td>"
+						+ "<td class='item-brand'>"
+						+ value.brand
+						+ "</td>"
+						+ "<td class='item-condition'>"
+						+ value.condition
+						+ "</td>"
+						+ "</tr>"
+					)
+				}
 			}
 		}, function () {
 		});
@@ -416,7 +570,6 @@ $(document).on('click', '#serch_button', function () {
 	} else if (selectNameValue != "" && selectBrandValue != "Categoryを選択してください") {
 
 		$.ajax({
-			//type: "POST",
 			type: "get",
 			url: "/getItemOfSerchedExistName",
 			dataType: "json",
@@ -431,31 +584,52 @@ $(document).on('click', '#serch_button', function () {
 
 			for (var value of data) {
 
-				$(".appendClass").append(
+				if (value.brand == null) {
+					$(".appendClass").append(
 
-					"<tr>"
-					+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-					+ value.name
-					+ "</a></td>"
-					+ "<td class='item-price'>"
-					+ value.price
-					+ "</td>"
-					+ "<td class='item-category'>"
-					+ value.category
-					+ "</td>"
-					+ "<td class='item-brand'>"
-					+ value.brand
-					+ "</td>"
-					+ "<td class='item-condition'>"
-					+ value.condition
-					+ "</td>"
-					+ "</tr>"
-				)
+						"<tr>"
+						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+						+ value.name
+						+ "</a></td>"
+						+ "<td class='item-price'>"
+						+ value.price
+						+ "</td>"
+						+ "<td class='item-category'>"
+						+ value.category
+						+ "</td>"
+						+ "<td class='item-brand'>"
+						+ ""
+						+ "</td>"
+						+ "<td class='item-condition'>"
+						+ value.condition
+						+ "</td>"
+						+ "</tr>"
+					)
+
+				} else {
+
+					$(".appendClass").append(
+
+						"<tr>"
+						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+						+ value.name
+						+ "</a></td>"
+						+ "<td class='item-price'>"
+						+ value.price
+						+ "</td>"
+						+ "<td class='item-category'>"
+						+ value.category
+						+ "</td>"
+						+ "<td class='item-brand'>"
+						+ value.brand
+						+ "</td>"
+						+ "<td class='item-condition'>"
+						+ value.condition
+						+ "</td>"
+						+ "</tr>"
+					)
+				}
 			}
-
-
-
-
 		}, function () {
 		});
 
@@ -465,7 +639,6 @@ $(document).on('click', '#serch_button', function () {
 	} else {
 
 		$.ajax({
-			//type: "POST",
 			type: "get",
 			url: "/getItemOfSerched",
 			dataType: "json",
@@ -479,30 +652,57 @@ $(document).on('click', '#serch_button', function () {
 
 			for (var value of data) {
 
-				$(".appendClass").append(
+				if (value.brand == null) {
+					$(".appendClass").append(
 
-					"<tr>"
-					+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-					+ value.name
-					+ "</a></td>"
-					+ "<td class='item-price'>"
-					+ value.price
-					+ "</td>"
-					+ "<td class='item-category'>"
-					+ value.category
-					+ "</td>"
-					+ "<td class='item-brand'>"
-					+ value.brand
-					+ "</td>"
-					+ "<td class='item-condition'>"
-					+ value.condition
-					+ "</td>"
-					+ "</tr>"
-				)
+						"<tr>"
+						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+						+ value.name
+						+ "</a></td>"
+						+ "<td class='item-price'>"
+						+ value.price
+						+ "</td>"
+						+ "<td class='item-category'>"
+						+ value.category
+						+ "</td>"
+						+ "<td class='item-brand'>"
+						+ ""
+						+ "</td>"
+						+ "<td class='item-condition'>"
+						+ value.condition
+						+ "</td>"
+						+ "</tr>"
+					)
+
+				} else {
+
+					$(".appendClass").append(
+
+						"<tr>"
+						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+						+ value.name
+						+ "</a></td>"
+						+ "<td class='item-price'>"
+						+ value.price
+						+ "</td>"
+						+ "<td class='item-category'>"
+						+ value.category
+						+ "</td>"
+						+ "<td class='item-brand'>"
+						+ value.brand
+						+ "</td>"
+						+ "<td class='item-condition'>"
+						+ value.condition
+						+ "</td>"
+						+ "</tr>"
+					)
+				}
 			}
 
 		}, function () {
 		});
+
+		$(select_page_form).val(1);
 
 	}
 });

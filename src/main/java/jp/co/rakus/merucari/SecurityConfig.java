@@ -31,25 +31,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// 認可の設定
-//		http.authorizeRequests().antMatchers("/", "/index").permitAll() // indexは全ユーザーアクセス許可
-		http.authorizeRequests().antMatchers("/displayLoginPage", "/login","/displayRegister","/excuteRegister").permitAll() // indexは全ユーザーアクセス許可
+		http.authorizeRequests().antMatchers("/displayLoginPage", "/login","/displayRegister","/excuteRegister").permitAll() // ログイン・新規登録は全ユーザーアクセス許可
 				.anyRequest().authenticated(); // それ以外は全て認証無しの場合アクセス不許可
 
 		// ログイン設定
 		http.formLogin().loginProcessingUrl("/login") // 認証処理のパス
-//				.loginPage("/index") // ログインフォームのパス
-//				.loginPage("/login") // ログインフォームのパス
 				.loginPage("/displayLoginPage") // ログインフォームのパス
-//				.failureHandler(new SampleAuthenticationFailureHandler()) // 認証失敗時に呼ばれるハンドラクラス      /** ハンドラ後で追加する  */
-//				.defaultSuccessUrl("/menu") // 認証成功時の遷移先
+//				.failureHandler(new SampleAuthenticationFailureHandler()) // 認証失敗時に呼ばれるハンドラクラス    ※余裕があれば
 				.defaultSuccessUrl("/",true) // 認証成功時の遷移先
 				.usernameParameter("mail_address").passwordParameter("password") // メールアドレス、パスワードのパラメータ名
 				;
 
 		// ログアウト設定
-		//http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout**")) // ログアウト処理のパス
 		http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // ログアウト処理のパス
-//				.logoutSuccessUrl("/index"); // ログアウト完了時のパス
 				.logoutSuccessUrl("/displayLoginPage"); // ログアウト完了時のパス
 
 	}
@@ -65,7 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			auth.userDetailsService(userDetailsService)
 					// 入力値をbcryptでハッシュ化した値でパスワード認証を行う
 					.passwordEncoder(new BCryptPasswordEncoder());
-
 		}
 	}
 }

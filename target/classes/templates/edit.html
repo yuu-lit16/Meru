@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- タイムリーフ読み込み -->
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <!-- タイムリーフ読み込み終了 -->
 <head>
   <meta charset="UTF-8"></meta>
@@ -33,7 +34,7 @@
           <li><a id="logout" href="/logout">Logout&nbsp;<i class="fa fa-power-off"></i></a></li>
         </ul>
         <p class="navbar-text navbar-right">
-          <span id="loginName">user: userName</span>
+          user: <span sec:authentication="name"></span>
         </p>
       </div>
     </div>

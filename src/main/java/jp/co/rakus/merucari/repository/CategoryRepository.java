@@ -43,7 +43,7 @@ public class CategoryRepository {
 	 * */
 	public List<Category> findParent() {
 		
-		String sql = "select id,parent,name,name_all from category where parent is null order by id";
+		String sql = "select id,parent,name,name_all from category where parent is null order by name asc";
 		
 		SqlParameterSource param = new MapSqlParameterSource();
 
@@ -60,7 +60,7 @@ public class CategoryRepository {
 	 * */
 	public List<Category> findChildByParent(int id) {
 		
-		String sql = "select id,parent,name,name_all from category where parent = :id order by id";
+		String sql = "select id,parent,name,name_all from category where parent = :id order by name asc";
 		
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id",id);
 

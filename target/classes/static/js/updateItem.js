@@ -1,10 +1,9 @@
-/** 検索機能 - 初めてアクセスされた際に親Categoryを取得してセレクトボックスに表示する - */
+/** 初めてアクセスされた際に親Categoryを取得してセレクトボックスに表示する - */
 $(function () {
 
     $("select option").attr("selected", false);
 
     $.ajax({
-//        type: "POST",
         type: "get",
         url: "/getJsonOfParentCategory",
         dataType: "json",
@@ -27,7 +26,7 @@ $(function () {
 });
 
 
-// *親カテゴリー* がデフォルト以外に変わったら発生 
+// *親カテゴリー* がデフォルト以外に変わったら発生
 $(document).on('change', '#parent_category', function () {
 
     $("select option").attr("selected", false);
@@ -45,7 +44,6 @@ $(document).on('change', '#parent_category', function () {
     } else {
 
         $.ajax({
-            //type: "POST",
         	type: "get",
             url: "/getJsonOfChildCategory",
             dataType: "json",
@@ -67,7 +65,7 @@ $(document).on('change', '#parent_category', function () {
 });
 
 
-// *子カテゴリー* がデフォルト以外に変わったら発生 
+// *子カテゴリー* がデフォルト以外に変わったら発生
 $(document).on('change', '#child_category', function () {
 
     $("select option").attr("selected", false);
@@ -84,7 +82,7 @@ $(document).on('change', '#child_category', function () {
     } else {
 
         $.ajax({
-            //type: "POST",
+            // type: "POST",
         	type: "get",
             url: "/getJsonOfGrandChildCategory",
             dataType: "json",
@@ -106,7 +104,7 @@ $(document).on('change', '#child_category', function () {
 });
 
 
-// *孫カテゴリー* がデフォルト以外に変わったら発生 
+// *孫カテゴリー* がデフォルト以外に変わったら発生
 $(document).on('change', '#grandchild_category', function () {
 
     $("select option").attr("selected", false);
@@ -123,7 +121,6 @@ $(document).on('change', '#grandchild_category', function () {
     } else {
 
         $.ajax({
-            //type: "POST",
         	type: "get",
             url: "/getJsonOfBrand",
             dataType: "json",

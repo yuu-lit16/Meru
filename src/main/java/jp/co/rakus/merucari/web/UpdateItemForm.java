@@ -1,12 +1,16 @@
 package jp.co.rakus.merucari.web;
 
 import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
 
 public class UpdateItemForm {
 	
 	@NotBlank(message="【name】を入力してください")
 	private String name;
+	
+	@Range(min=1, max=1000000000,message="【price】は数字で入力してください")
 	@NotBlank(message="【price】を入力してください")
 	private String price;
 	

@@ -59,24 +59,18 @@ public class ItemRepository {
 		String sql = "insert into items(id,name,condition,category,brand,price,shipping,description)"
 				+ " values(:id,:name,:condition,:categoryId,:brand,:price,:shipping,:description)";
 
-		SqlParameterSource param = new MapSqlParameterSource()
-				.addValue("id", item.getId())
-				.addValue("name", item.getName())
-				.addValue("condition", item.getCondition())
-				.addValue("categoryId", item.getCategoryId())
-				.addValue("brand", item.getBrand())
-				.addValue("price", item.getPrice())
-				.addValue("shipping", item.getShipping())
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", item.getId())
+				.addValue("name", item.getName()).addValue("condition", item.getCondition())
+				.addValue("categoryId", item.getCategoryId()).addValue("brand", item.getBrand())
+				.addValue("price", item.getPrice()).addValue("shipping", item.getShipping())
 				.addValue("description", item.getDescription());
 
 		namedjdbcTemplate.update(sql, param);
 
 	}
-	
-	
+
 	/**
-	 * Update用
-	 * 引数のitemで既存データを書き換え
+	 * Update用 引数のitemで既存データを書き換え
 	 * 
 	 * @param Item
 	 */
@@ -84,22 +78,15 @@ public class ItemRepository {
 
 		String sql = "update items set name = :name, condition = :condition, category= :category, brand = :brand, price = :price, description = :description where id = :id";
 
-		SqlParameterSource param = new MapSqlParameterSource()
-				.addValue("id", item.getId())
-				.addValue("name", item.getName())
-				.addValue("condition", item.getCondition())
-				.addValue("category", item.getCategoryId())
-				.addValue("brand", item.getBrand())
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", item.getId())
+				.addValue("name", item.getName()).addValue("condition", item.getCondition())
+				.addValue("category", item.getCategoryId()).addValue("brand", item.getBrand())
 				.addValue("price", item.getPrice())
-				//.addValue("shipping", item.getShipping())
 				.addValue("description", item.getDescription());
 
 		namedjdbcTemplate.update(sql, param);
 
 	}
-	
-	
-	
 
 	/**
 	 * test用 itemテーブルの頭から30件取得
@@ -189,6 +176,20 @@ public class ItemRepository {
 	}
 
 	/**
+	 * brand名をstring型のlistで返す
+	 * */
+	public List<String> findBrandOfStringByParent(int id) {
+
+		String sql = "select distinct brand from items where category = :id and brand is not null order by brand asc";
+
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+
+		List<String> brandNameList = namedjdbcTemplate.queryForList(sql, param, String.class);
+
+		return brandNameList;
+	}
+
+	/**
 	 * - 検索フォーム用 - 引数の孫idとブランド名を元に検索してヒットしたItemを返す
 	 * 
 	 * @param int
@@ -211,8 +212,7 @@ public class ItemRepository {
 
 		return itemList;
 	}
-	
-	
+
 	/**
 	 * - 検索フォーム用 - 引数の名前と孫idとブランド名を元に検索してヒットしたItemを返す
 	 * 
@@ -221,12 +221,12 @@ public class ItemRepository {
 	 * @param String
 	 *            brandName
 	 * @param String
-	 * 				name
+	 *            name
 	 * 
 	 * @return Item item
 	 * 
 	 */
-	public List<Item> findSearchedItemExistName(int grandChildId, String brandName,String name) {
+	public List<Item> findSearchedItemExistName(int grandChildId, String brandName, String name) {
 
 		String sql = "select items.id,items.name,items.condition,category.name_all as \"category\",items.brand,items.price,items.shipping,items.description"
 				+ " from items left outer join category on items.category = category.id  where items.category = :grandChildId and brand = :brandName and items.name like :name order by items.id";
@@ -238,13 +238,12 @@ public class ItemRepository {
 
 		return itemList;
 	}
-	
-	
+
 	/**
 	 * - 検索フォーム用 - 引数の名前で検索してヒットしたItemを返す
 	 * 
-	 *@param String
-	 * 				name
+	 * @param String
+	 *            name
 	 * 
 	 * @return Item item
 	 * 
@@ -260,6 +259,5 @@ public class ItemRepository {
 
 		return itemList;
 	}
-
 
 }
