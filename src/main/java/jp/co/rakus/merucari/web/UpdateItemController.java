@@ -9,7 +9,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import jp.co.rakus.merucari.domain.Category;
 import jp.co.rakus.merucari.domain.Item;
+import jp.co.rakus.merucari.service.CategoryService;
 import jp.co.rakus.merucari.service.ItemService;
 
 @Controller
@@ -18,6 +21,9 @@ public class UpdateItemController {
 
 	@Autowired
 	private ItemService itemService;
+	
+	@Autowired
+	private CategoryService categoryService;
 
 
 	/** Formをセット（商品追加用） */
@@ -66,9 +72,15 @@ public class UpdateItemController {
 		form.setBrand(item.getBrand());
 		form.setDescription(item.getDescription());
 		form.setCondition(String.valueOf(item.getCondition()));
+		
+		String[] arrayCategory = item.getCategory().split("/",0);
 
 		model.addAttribute("updateItemForm", form);
 		model.addAttribute("id",id);
+		model.addAttribute("parentName",arrayCategory[0]);
+		model.addAttribute("childName",arrayCategory[1]);
+		model.addAttribute("grandChildName",arrayCategory[2]);
+		
 
 		return "edit";
 	}

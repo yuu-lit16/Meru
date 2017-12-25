@@ -1,5 +1,7 @@
 package jp.co.rakus.merucari.service;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,12 @@ public class CategoryService {
 
 		return repository.findChildByParent(id);
 	}
-
-
+	
+	/**
+	 * category id 取得用
+	 * */
+	public Integer findIdByNameAll(String nameAll) {
+		return repository.findIdByNameAll(nameAll);
+	}
 	
 }
