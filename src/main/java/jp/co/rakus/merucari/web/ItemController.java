@@ -65,7 +65,6 @@ public class ItemController {
 	public List<String> getJsonOfBrand(@RequestParam String parentId) {
 		return itemService.findBrandOfStringByParent(Integer.parseInt(parentId));
 	}
-
 	
 	/** 【ajax】検索機能 - 孫idとブランド名で検索した結果のItemListを返す */
 	@RequestMapping(value = "/getItemOfSerched")
@@ -104,7 +103,7 @@ public class ItemController {
 	/** 【ajax】検索機能 - 名前だけで検索した結果のItemListを返す */
 	@RequestMapping(value = "/getItemOfSerchedOnlyName")
 	@ResponseBody
-	public List<Item> getItemOfSerched(
+	public List<Item> getItemOfSerchedOnlyName(
 			@RequestParam String selectNameValue
 			) {
 		

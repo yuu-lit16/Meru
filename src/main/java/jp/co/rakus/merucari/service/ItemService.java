@@ -3,8 +3,12 @@ package jp.co.rakus.merucari.service;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
+
 import jp.co.rakus.merucari.domain.Item;
 import jp.co.rakus.merucari.repository.ItemRepository;
 
@@ -177,7 +181,21 @@ public class ItemService {
 	 * 
 	 */
 	public List<Item> findSearchedItemOnlyName(String name) {
-		return repository.findSearchedItemOnlyName(name);
-	}
+		
+		String[] arrayNameList = name.replaceAll("　", " ").split("[\\s]",0);
+		String addName = " and items.name like :name";
+		String createdAddName = "";
+		
+		for (int i = 1; i < arrayNameList.length; i++) {
+			createdAddName += addName +String.valueOf(i) + " ";
+		}
+		
+		String sql = 
+				"select items.id,items.name,items.condition,category.name_all as \"category\",items.brand,items.price,items.shipping,items.description"
+				+ " from items left outer join category on items.category = category.id  where items.name like :name"
+				+ createdAddName
+				+ " order by items.id";
 
+		return repository.findSearchedItemOnlyName(sql,arrayNameList);
+	}
 }

@@ -1,5 +1,6 @@
 package jp.co.rakus.merucari.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import jp.co.rakus.merucari.domain.Item;
 
 @Repository
@@ -81,8 +83,7 @@ public class ItemRepository {
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", item.getId())
 				.addValue("name", item.getName()).addValue("condition", item.getCondition())
 				.addValue("category", item.getCategoryId()).addValue("brand", item.getBrand())
-				.addValue("price", item.getPrice())
-				.addValue("description", item.getDescription());
+				.addValue("price", item.getPrice()).addValue("description", item.getDescription());
 
 		namedjdbcTemplate.update(sql, param);
 
@@ -177,7 +178,7 @@ public class ItemRepository {
 
 	/**
 	 * brand名をstring型のlistで返す
-	 * */
+	 */
 	public List<String> findBrandOfStringByParent(int id) {
 
 		String sql = "select distinct brand from items where category = :id and brand is not null order by brand asc";
@@ -248,15 +249,22 @@ public class ItemRepository {
 	 * @return Item item
 	 * 
 	 */
-	public List<Item> findSearchedItemOnlyName(String name) {
+	public List<Item> findSearchedItemOnlyName(String sql, String[] arraySelectName) {
 
-		String sql = "select items.id,items.name,items.condition,category.name_all as \"category\",items.brand,items.price,items.shipping,items.description"
-				+ " from items left outer join category on items.category = category.id  where items.name like :name order by items.id";
+		SqlParameterSource param = new MapSqlParameterSource();
 
-		SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
-
-		List<Item> itemList = namedjdbcTemplate.query(sql, param, RowMapper);
-
+		List<Item> itemList = new ArrayList<>();
+						
+		if (arraySelectName.length == 1) {
+			((MapSqlParameterSource) param).addValue("name", "%" + arraySelectName[0] + "%");
+			itemList = namedjdbcTemplate.query(sql, param, RowMapper);
+		} else {
+			((MapSqlParameterSource) param).addValue("name", "%" + arraySelectName[0] + "%");
+			for (int i = 1; i < arraySelectName.length; i++) {
+				((MapSqlParameterSource) param).addValue("name" + String.valueOf(i), "%" + arraySelectName[i] + "%");
+			}
+			itemList = namedjdbcTemplate.query(sql, param, RowMapper);
+		}
 		return itemList;
 	}
 

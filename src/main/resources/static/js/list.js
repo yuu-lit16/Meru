@@ -282,6 +282,15 @@ $("#go_btn").click(function () {
 	}
 	//----------------------------------
 
+	var select_page = $("#select_page_form").val();
+
+	// 数値チェック
+	if (isNaN(select_page)) {
+		alert("数値を入力してください");
+		return;
+	}
+
+
 	alert($("#select_page_form").val() + "ページ目へ移動します");
 
 	$.ajax({
@@ -499,144 +508,145 @@ $(document).on('click', '#serch_button', function () {
 	var selectBrandValue = $("#select_category").val();
 	var selectParentValue = $("#parent_category").val();
 
-	// name 検索
-	if (selectParentValue != 0 && selectBrandValue == "Categoryを選択してください") {
+	// name 有り 
+	if (selectNameValue != "") {
 
-		$.ajax({
-			//type: "POST",
-			type: "get",
-			url: "/getItemOfSerchedOnlyName",
-			dataType: "json",
-			data: {
-				"selectNameValue": selectNameValue
-			}
-		}).then(function (data) {
+		// name only
+		if (selectBrandValue == "Categoryを選択してください") {
 
-			$(".appendClass").empty();
-
-			for (var value of data) {
-
-				if (value.brand == null) {
-					$(".appendClass").append(
-
-						"<tr>"
-						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-						+ value.name
-						+ "</a></td>"
-						+ "<td class='item-price'>"
-						+ value.price
-						+ "</td>"
-						+ "<td class='item-category'>"
-						+ value.category
-						+ "</td>"
-						+ "<td class='item-brand'>"
-						+ ""
-						+ "</td>"
-						+ "<td class='item-condition'>"
-						+ value.condition
-						+ "</td>"
-						+ "</tr>"
-					)
-
-				} else {
-
-					$(".appendClass").append(
-
-						"<tr>"
-						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-						+ value.name
-						+ "</a></td>"
-						+ "<td class='item-price'>"
-						+ value.price
-						+ "</td>"
-						+ "<td class='item-category'>"
-						+ value.category
-						+ "</td>"
-						+ "<td class='item-brand'>"
-						+ value.brand
-						+ "</td>"
-						+ "<td class='item-condition'>"
-						+ value.condition
-						+ "</td>"
-						+ "</tr>"
-					)
+			$.ajax({
+				type: "get",
+				url: "/getItemOfSerchedOnlyName",
+				dataType: "json",
+				data: {
+					"selectNameValue": selectNameValue
 				}
-			}
-		}, function () {
-		});
+			}).then(function (data) {
 
+				$(".appendClass").empty();
 
-		// name + category + brand 検索
-	} else if (selectNameValue != "" && selectBrandValue != "Categoryを選択してください") {
+				for (var value of data) {
 
-		$.ajax({
-			type: "get",
-			url: "/getItemOfSerchedExistName",
-			dataType: "json",
-			data: {
-				"selectNameValue": selectNameValue,
-				"selectGrandChildValue": selectGrandChildValue,
-				"selectBrandValue": selectBrandValue
-			}
-		}).then(function (data) {
+					if (value.brand == null) {
+						$(".appendClass").append(
 
-			$(".appendClass").empty();
+							"<tr>"
+							+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+							+ value.name
+							+ "</a></td>"
+							+ "<td class='item-price'>"
+							+ value.price
+							+ "</td>"
+							+ "<td class='item-category'>"
+							+ value.category
+							+ "</td>"
+							+ "<td class='item-brand'>"
+							+ ""
+							+ "</td>"
+							+ "<td class='item-condition'>"
+							+ value.condition
+							+ "</td>"
+							+ "</tr>"
+						)
 
-			for (var value of data) {
+					} else {
 
-				if (value.brand == null) {
-					$(".appendClass").append(
+						$(".appendClass").append(
 
-						"<tr>"
-						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-						+ value.name
-						+ "</a></td>"
-						+ "<td class='item-price'>"
-						+ value.price
-						+ "</td>"
-						+ "<td class='item-category'>"
-						+ value.category
-						+ "</td>"
-						+ "<td class='item-brand'>"
-						+ ""
-						+ "</td>"
-						+ "<td class='item-condition'>"
-						+ value.condition
-						+ "</td>"
-						+ "</tr>"
-					)
-
-				} else {
-
-					$(".appendClass").append(
-
-						"<tr>"
-						+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
-						+ value.name
-						+ "</a></td>"
-						+ "<td class='item-price'>"
-						+ value.price
-						+ "</td>"
-						+ "<td class='item-category'>"
-						+ value.category
-						+ "</td>"
-						+ "<td class='item-brand'>"
-						+ value.brand
-						+ "</td>"
-						+ "<td class='item-condition'>"
-						+ value.condition
-						+ "</td>"
-						+ "</tr>"
-					)
+							"<tr>"
+							+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+							+ value.name
+							+ "</a></td>"
+							+ "<td class='item-price'>"
+							+ value.price
+							+ "</td>"
+							+ "<td class='item-category'>"
+							+ value.category
+							+ "</td>"
+							+ "<td class='item-brand'>"
+							+ value.brand
+							+ "</td>"
+							+ "<td class='item-condition'>"
+							+ value.condition
+							+ "</td>"
+							+ "</tr>"
+						)
+					}
 				}
-			}
-		}, function () {
-		});
+			}, function () {
+			});
+
+		} else {
+			// name + category + brand
+
+			$.ajax({
+				type: "get",
+				url: "/getItemOfSerchedExistName",
+				dataType: "json",
+				data: {
+					"selectNameValue": selectNameValue,
+					"selectGrandChildValue": selectGrandChildValue,
+					"selectBrandValue": selectBrandValue
+				}
+			}).then(function (data) {
+
+				$(".appendClass").empty();
+
+				for (var value of data) {
+
+					if (value.brand == null) {
+						$(".appendClass").append(
+
+							"<tr>"
+							+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+							+ value.name
+							+ "</a></td>"
+							+ "<td class='item-price'>"
+							+ value.price
+							+ "</td>"
+							+ "<td class='item-category'>"
+							+ value.category
+							+ "</td>"
+							+ "<td class='item-brand'>"
+							+ ""
+							+ "</td>"
+							+ "<td class='item-condition'>"
+							+ value.condition
+							+ "</td>"
+							+ "</tr>"
+						)
+
+					} else {
+
+						$(".appendClass").append(
+
+							"<tr>"
+							+ "<td class='item-name'><a href='detail?id=" + value.id + "'>"
+							+ value.name
+							+ "</a></td>"
+							+ "<td class='item-price'>"
+							+ value.price
+							+ "</td>"
+							+ "<td class='item-category'>"
+							+ value.category
+							+ "</td>"
+							+ "<td class='item-brand'>"
+							+ value.brand
+							+ "</td>"
+							+ "<td class='item-condition'>"
+							+ value.condition
+							+ "</td>"
+							+ "</tr>"
+						)
+					}
+				}
+			}, function () {
+			});
+		}
 
 
-
-		// category + brand 検索
 	} else {
+		// category + brand 検索
 
 		$.ajax({
 			type: "get",
