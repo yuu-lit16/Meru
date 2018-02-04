@@ -14,7 +14,7 @@ import jp.co.rakus.merucari.repository.OriginalRepository;
 import jp.co.rakus.merucari.service.OriginalService;
 
 @Controller
-@RequestMapping(value = "/")
+@RequestMapping(value = "/insert_of_data")
 public class OriginalController {
 
 	@Autowired
@@ -126,16 +126,16 @@ public class OriginalController {
 					Category category = new Category();
 					category.setName(thirdCategoryName);
 					category.setParent(secondCategoryObject.getId());
-					
+
 					// nameAllも追加 -----------------------------------------------------------------------------------------------------------
 					category.setNameAll(firstCategory.getName() +  "/" + secondCategoryObject.getName() + "/" + thirdCategoryName);
 					// ---------------------------------------------------------------------------------------------------------------------------
-					
+
 					/** save 処理 ---------------------------------- */
-					// repository.saveCategorySecond(category);    --- カラム nameAll 追加前   
-					// repository.saveCategoryNameAll(category);   --- 追加後
+					 //int maxId = repository.saveCategorySecond(category);    //--- カラム nameAll 追加前 ※　これはコメントのまま追加する
+					 //repository.saveCategoryNameAll(category);   //--- 追加後
  					/** ------------------------------------------- */
-					
+
 				}
 			}
 

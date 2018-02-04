@@ -1,6 +1,7 @@
 package jp.co.rakus.merucari.repository;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -48,17 +49,20 @@ public class OriginalRepository {
 
 		namedTemplate.update("INSERT INTO category (name) values (:name)", param);
 	}
-	
+
 	/** save second or third*/
+	//public int saveCategorySecond(Category category) {
 	public void saveCategorySecond(Category category) {
 
 		SqlParameterSource param = new BeanPropertySqlParameterSource(category);
 
 		namedTemplate.update("INSERT INTO category (parent,name) values (:parent,:name)", param);
+
+		//return jdbcTemplate.queryForObject("select max(id) from category", Integer.class);
 	}
 
-	
-	
+
+
 
 	/** categoryテーブルのfindAll */
 	public List<Category> findAllCategoryTable() {
@@ -67,10 +71,10 @@ public class OriginalRepository {
 		List<Category> categoryList = namedTemplate.query(sql, categoryRowMapper);
 		return categoryList;
 	}
-	
-	
-	
-	
+
+
+
+
 	/** categoryテーブルの親だけを取ってくる*/
 	public List<Category> findFirstCategoryTable() {
 
@@ -78,8 +82,8 @@ public class OriginalRepository {
 		List<Category> categoryList = namedTemplate.query(sql, categoryRowMapper);
 		return categoryList;
 	}
-	
-	
+
+
 	/** categoryテーブルの子だけ(孫が登録されていない状況で)を取ってくる */
 	public List<Category> findSecondCategoryTable() {
 
@@ -88,13 +92,15 @@ public class OriginalRepository {
 		return categoryList;
 	}
 
-	
+
 	/** categoryテーブルにname_allもsaveする */
+	//public void saveCategoryNameAll(Category category, int id) {
 	public void saveCategoryNameAll(Category category) {
 
 		SqlParameterSource param = new BeanPropertySqlParameterSource(category);
 
 		namedTemplate.update("INSERT INTO category (parent,name,name_all) values (:parent,:name,:nameAll)", param);
+		//namedTemplate.update("update set category parent = :parent,name = :name,nameAll = :nameAll where id =" + id, param);
 	}
 
 }
