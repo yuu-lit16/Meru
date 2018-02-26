@@ -2,7 +2,6 @@ var totalPageNum = 0;
 var flag = false;
 var counter = 1;
 
-
 /** ItemList表示機能 - 初めてアクセスされた際にitemを表示する - */
 $(function () {
 
@@ -11,9 +10,9 @@ $(function () {
 		url: "/getJsonOfIndexItemList",
 		dataType: "json"
 	}).then(function (data) {
+		console.log(data);
 
 		for (var value of data) {
-
 			if (value.brand == null) {
 				$(".appendClass").append(
 
@@ -385,7 +384,7 @@ $(function () {
 });
 
 
-// *親カテゴリー* がデフォルト以外に変わったら発生 
+// *親カテゴリー* がデフォルト以外に変わったら発生
 $(document).on('change', '#parent_category', function () {
 
 	var parentValue = $("#parent_category").val();
@@ -421,7 +420,7 @@ $(document).on('change', '#parent_category', function () {
 });
 
 
-// *子カテゴリー* がデフォルト以外に変わったら発生 
+// *子カテゴリー* がデフォルト以外に変わったら発生
 $(document).on('change', '#child_category', function () {
 
 	var childValue = $("#child_category").val();
@@ -457,7 +456,7 @@ $(document).on('change', '#child_category', function () {
 });
 
 
-// *孫カテゴリー* がデフォルト以外に変わったら発生 
+// *孫カテゴリー* がデフォルト以外に変わったら発生
 $(document).on('change', '#grandchild_category', function () {
 
 	var grandChildValue = $("#grandchild_category").val();
@@ -508,7 +507,7 @@ $(document).on('click', '#serch_button', function () {
 	var selectBrandValue = $("#select_category").val();
 	var selectParentValue = $("#parent_category").val();
 
-	// name 有り 
+	// name 有り
 	if (selectNameValue != "") {
 
 		// name only
